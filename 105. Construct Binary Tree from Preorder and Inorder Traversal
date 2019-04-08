@@ -1,0 +1,63 @@
+/*
+Given preorder and inorder traversal of a tree, construct the binary tree.
+
+Note:
+You may assume that duplicates do not exist in the tree.
+
+For example, given
+
+preorder = [3,9,20,15,7]
+inorder = [9,3,15,20,7]
+Return the following binary tree:
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+   */
+   
+   /**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+ 
+class Solution {
+public:
+    TreeNode* buildTreeCore(vector<int>& preorder, vector<int>& inorder, int preStart, int preEnd, int inStart, int inEnd)
+    {
+        if(inEnd < inStart || preEnd < preStart)  
+            return nullptr;
+        
+        if(preStart == preEnd && inStart == inEnd && preorder[preStart] == inorder[inStart])
+        {
+            TreeNode *p = new TreeNode(preorder[preStart]);    //根节点
+            return p;
+        }
+        
+        TreeNode *p = new TreeNode(preorder[preStart]);
+        
+        int i = inStart;
+        for(; i <= inEnd; ++i)
+        {
+            if(inorder[i] == preorder[preStart])
+                break;
+        }
+        
+        int diff = i - inStart;   //找出根节点的左半部分
+        p->left = buildTreeCore(preorder, inorder, preStart + 1, preStart + diff, inStart, i - 1);
+        p->right = buildTreeCore(preorder, inorder, preStart + diff + 1, preEnd, i + 1, inEnd);
+            
+        return p;
+    }
+    
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) 
+    {
+        return buildTreeCore(preorder, inorder, 0, preorder.size() - 1, 0, inorder.size() - 1);
+    }
+};
