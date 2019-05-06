@@ -1,0 +1,56 @@
+/*
+242. Valid Anagram
+Given two strings s and t , write a function to determine if t is an anagram of s.
+
+Example 1:
+
+Input: s = "anagram", t = "nagaram"
+Output: true
+Example 2:
+
+Input: s = "rat", t = "car"
+Output: false
+Note:
+You may assume the string contains only lowercase alphabets.
+
+Follow up:
+What if the inputs contain unicode characters? How would you adapt your solution to such case?
+*/
+
+//第一种解法，排序后直接判断是否相等，这种解法对unicode也适用
+class Solution1 {
+public:
+    bool isAnagram(string s, string t) {
+        if(s.size() != t.size())
+            return false;
+        
+        std::sort(s.begin(), s.end());
+        std::sort(t.begin(), t.end());
+        return s == t;
+    }
+};
+
+//第二种解法，利用unordered_map
+class Solution2 {
+public:
+    bool isAnagram(string s, string t) {
+        if(s.size() != t.size())
+            return false;
+        
+        unordered_map<char, int> anagram;
+        for(int i = 0; i < s.size(); ++i)
+        {
+            anagram[s[i]]++;
+            anagram[t[i]]--;
+        }
+        
+        //如果s和t符合条件，则map中每一个键的值都为0
+        for(auto &valid : anagram)
+        {
+            if(valid.second != 0)
+                return false;
+        }
+        
+        return true;
+    }
+};
