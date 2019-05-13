@@ -51,39 +51,59 @@ public:
 
 typedef pair<int, double> idxDist;
 
-class Solution {
+class Solution2 {
 public:
-    int kClosestRecur(vector<idxDist> &dists, int lo, int hi)
+    int kClosestPartition(vector<idxDist> &dists, int lo, int hi)
     {
         random_device rd;
         mt19937 mt(rd());
-        uniform_int_distribution uid(lo, hi);
-        int num = uid(mt);    
+        uniform_int_distribution<int> uid(lo, hi);
+        int num = uid(mt);
         double sentry = dists[num].second;
-        auto it = partition(dists.begin() + lo, dists.begin() + hi, [sentry](const auto& a){
-                                                                          return sentry < a.second;});
-        return distance(dists.begin() + lo, --it);
+        swap(dists[lo], dists[num]);
+        int i = lo, j = hi + 1;
+        while(true)
+        {
+            while(dists[++i].second <= sentry)
+            {
+                if(i == hi)
+                    break;
+            }
+            while(dists[--j].second >= sentry)
+            {
+                if(j == lo)
+                    break;
+            }
+            if(j <= i)
+                break;
+            swap(dists[i], dists[j]);
+        }
+
+        swap(dists[j], dists[lo]);
+
+        return j;
     }
     
     void kClosestCore(vector<idxDist> &dists, int lo, int hi, int k)
     {
-        if(hi <= lo)
+        if(hi == lo)
             return;
         
-        int pos = kClosestRecur(dists, lo, hi) - lo + 1;
-        if(k == pos)
+        int pos = kClosestPartition(dists, lo, hi);
+        int pos2 = pos - lo + 1;
+        if(k == pos2)
             return;
-        else if(k > pos)
-            kClosestCore(dists, pos + 1, hi, k - pos);
+        else if(k > pos2)
+            kClosestCore(dists, ++pos, hi, k - pos2);
         else
-            kClosestCore(dists, lo, pos -  1, k);
+            kClosestCore(dists, lo, --pos, k);
     }
     
     vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
         vector<idxDist> dists;
         vector<vector<int>> ret;
         for(int i = 0; i < points.size(); ++i)
-            dists.push_back(make_pair(i, pow(points[i][0], 2) + pow(points[i][1], 2)));
+            dists.push_back(make_pair(i, pow(points[i][0] * 1.0f, 2) + pow(points[i][1] * 1.0f, 2)));
         
         kClosestCore(dists, 0, dists.size() - 1, k);
         for(int i = 0; i < k; ++i)
