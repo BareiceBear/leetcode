@@ -1,0 +1,61 @@
+'''
+设计一个支持 push，pop，top 操作，并能在常数时间内检索到最小元素的栈。
+
+push(x) -- 将元素 x 推入栈中。
+pop() -- 删除栈顶的元素。
+top() -- 获取栈顶元素。
+getMin() -- 检索栈中的最小元素。
+示例:
+
+MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin();   --> 返回 -3.
+minStack.pop();
+minStack.top();      --> 返回 0.
+minStack.getMin();   --> 返回 -2.
+'''
+
+class MinStack:
+
+    def __init__(self):
+        """
+        initialize your data structure here.
+        """
+        self.__min = float('inf');
+        self.__stack = []
+
+    def push(self, x: int) -> None:
+        self.__stack.append(x)
+        if x < self.__min:
+            self.__min = x
+        
+
+    def pop(self) -> None:
+        if 0 == len(self.__stack):
+            return
+        val = self.__stack.pop()
+        if 0 == len(self.__stack):
+            self.__min = float('inf')         #需要更新最小值
+        elif self.__min == val:
+            self.__min = min(self.__stack)
+        else: 
+            return
+
+    def top(self) -> int:
+        length = len(self.__stack)
+        if 0 == length:
+            return float('inf')        
+        return self.__stack[length - 1]
+
+    def getMin(self) -> int:
+        return self.__min;
+
+
+# Your MinStack object will be instantiated and called as such:
+# obj = MinStack()
+# obj.push(x)
+# obj.pop()
+# param_3 = obj.top()
+# param_4 = obj.getMin()
