@@ -1,0 +1,65 @@
+/*
+Given a linked list, swap every two adjacent nodes and return its head.
+
+You may not modify the values in the list's nodes, only nodes itself may be changed.
+
+ 
+
+Example:
+
+Given 1->2->3->4, you should return the list as 2->1->4->3
+*/
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+
+CPP:
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if(nullptr == head || nullptr == head->next)
+            return head;
+        
+        ListNode* cur = head;
+        ListNode* pre = nullptr;
+        head = head->next;
+        
+        while(nullptr != cur && nullptr != cur->next)
+        {
+            ListNode* tmp = cur->next;
+            cur->next = tmp->next;
+            tmp->next = cur;
+            if(nullptr != pre)
+                pre->next = tmp;
+            
+            pre = cur;
+            cur = cur->next;
+        }
+        
+        return head;
+    }
+};
+
+python:
+class Solution:
+    def swapPairs(self, head: ListNode) -> ListNode:
+        if None == head or None == head.next:
+            return head
+        
+        pre, cur = None, head    
+        head = head.next
+        while None != cur and None != cur.next:
+            tmp = cur.next
+            cur.next = tmp.next
+            tmp.next = cur
+            if None != pre:
+                pre.next = tmp
+            pre, cur = cur, cur.next
+            
+        return head
