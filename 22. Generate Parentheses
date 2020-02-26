@@ -1,0 +1,52 @@
+/*
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+For example, given n = 3, a solution set is:
+
+[
+  "((()))",
+  "(()())",
+  "(())()",
+  "()(())",
+  "()()()"
+]
+*/
+
+class Solution {
+    using bracketMap = std::unordered_map<string, int>;
+protected:
+    void generate(int nums, bracketMap &brackets, string &str, vector<string> &astr)
+    {
+        if(nums <= 0)
+        {
+            astr.push_back(str);
+            return;
+        }
+        
+        if(brackets["("] > brackets[")"])
+            return;
+        
+        for(auto &bracket : brackets)
+        {
+            if(bracket.second <= 0)
+                continue;
+            bracket.second -= 1;
+            str.append(bracket.first);
+            generate(nums - 1, brackets, str, astr);
+            str.pop_back();
+            bracket.second += 1;
+        }
+    }
+    
+public:
+    vector<string> generateParenthesis(int n) {
+        string str;
+        vector<string> ret;
+        int nums = n * 2;
+        
+        bracketMap brackets = {{"(", n}, {")", n}};
+        generate(nums, brackets, str, ret);
+        
+        return ret;
+    }
+};
